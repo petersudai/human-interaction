@@ -1,0 +1,83 @@
+---
+import "../styles/global.css";
+import BackToTop from "../components/BackToTop";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Human Interaction | Web & software built to sell",
+  description = "Human Interaction designs and builds fast, high-end websites and software for ambitious businesses, creatives, and founders, wherever they're based. A real team behind every line, and a real person on the phone.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/logo.png" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body>
+    <div id="ambient-glow" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div id="ambient-glow-track" class="absolute left-1/2 top-0 h-[60vh] w-[140vw] -translate-x-1/2">
+        <div
+          id="ambient-glow-cool"
+          class="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,var(--color-dusk-600),transparent)] opacity-60 blur-[140px]"
+        >
+        </div>
+        <div
+          id="ambient-glow-warm"
+          class="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,var(--color-gold-600),transparent)] opacity-0 blur-[140px]"
+        >
+        </div>
+      </div>
+    </div>
+
+    <slot />
+    <BackToTop client:load />
+
+    <script>
+      const track = document.getElementById("ambient-glow-track");
+      const warm = document.getElementById("ambient-glow-warm");
+      let ticking = false;
+
+      function update() {
+        ticking = false;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / docHeight)) : 0;
+        if (warm) warm.style.opacity = String(progress);
+        if (track) track.style.transform = `translateX(-50%) translateY(${progress * 90}vh)`;
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+
+      update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    </script>
+  </body>
+</html>

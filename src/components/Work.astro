@@ -1,0 +1,95 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import Reveal from "./Reveal";
+import { caseStudies } from "../data/content";
+
+// Falls back to a styled placeholder panel until real screenshots land in public/work/
+const items = caseStudies.map((c) => ({
+  ...c,
+  hasImage: fs.existsSync(path.join(process.cwd(), "public", c.image)),
+}));
+---
+
+<section id="work" class="border-b border-ink-border py-24 sm:py-32">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <Reveal client:visible className="max-w-2xl">
+      <span class="text-xs uppercase tracking-[0.15em] text-gold-300">Our work</span>
+      <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-cream sm:text-5xl">
+        Selected work.
+      </h2>
+    </Reveal>
+
+    <div class="mt-16 grid gap-8 md:grid-cols-2">
+      {
+        items.map((c, i) => (
+          <Reveal client:visible delay={i * 0.1} className="h-full">
+            <a
+              href={c.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-tilt
+              class="tilt-card group flex h-full flex-col overflow-hidden rounded-2xl border border-ink-border bg-ink-2/40"
+            >
+              <div class="relative aspect-[16/10] overflow-hidden">
+                {c.hasImage ? (
+                  <img
+                    src={c.image}
+                    alt={c.title}
+                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-dusk-700 via-ink-2 to-gold-700/40">
+                    <span class="font-display text-5xl italic text-cream/25">{c.title}</span>
+                  </div>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-transparent" />
+                <span class="absolute bottom-4 left-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-200">
+                  View project{" "}
+                  <span aria-hidden class="transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
+                </span>
+              </div>
+              <div class="flex flex-1 flex-col p-6">
+                <div class="flex flex-wrap gap-2">
+                  {c.tags.map((t) => (
+                    <span class="rounded-full border border-ink-border px-3 py-1 text-xs text-dusk-100/80">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <h3 class="mt-4 font-display text-2xl text-cream">{c.title}</h3>
+                <p class="mt-2 text-dusk-100/70 line-clamp-3">{c.description}</p>
+                <p class="mt-auto pt-4 text-sm font-semibold text-gold-300">{c.metric}</p>
+              </div>
+            </a>
+          </Reveal>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const cards = document.querySelectorAll<HTMLElement>("[data-tilt]");
+  const MAX_TILT = 10;
+
+  cards.forEach((card) => {
+    const onMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.setProperty("--tilt-rx", `${(-py * MAX_TILT).toFixed(2)}deg`);
+      card.style.setProperty("--tilt-ry", `${(px * MAX_TILT).toFixed(2)}deg`);
+      card.style.setProperty("--tilt-y", "-6px");
+    };
+    const onLeave = () => {
+      card.style.setProperty("--tilt-rx", "0deg");
+      card.style.setProperty("--tilt-ry", "0deg");
+      card.style.setProperty("--tilt-y", "0px");
+    };
+    card.addEventListener("mousemove", onMove);
+    card.addEventListener("mouseleave", onLeave);
+  });
+</script>

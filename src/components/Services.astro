@@ -1,0 +1,21 @@
+---
+import Reveal from "./Reveal";
+import ServicesAccordion from "./ServicesAccordion";
+---
+
+<section id="services" class="relative border-b border-ink-border py-24 sm:py-32">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <Reveal client:visible className="max-w-2xl">
+      <span class="text-xs uppercase tracking-[0.15em] text-gold-300">What we do</span>
+      <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-cream sm:text-5xl">
+        Everything your business needs to <em class="italic text-gold-300">show up</em> and <em
+          class="italic text-gold-300">sell</em
+        > online.
+      </h2>
+    </Reveal>
+
+    <div class="mt-16">
+      <ServicesAccordion client:visible />
+    </div>
+  </div>
+</section>

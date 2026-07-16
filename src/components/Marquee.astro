@@ -1,0 +1,19 @@
+---
+import { services } from "../data/content";
+
+const items = services.map((s) => s.title);
+const loopItems = [...items, ...items];
+---
+
+<section class="overflow-hidden border-y border-ink-border bg-ink-2/50 py-4">
+  <div class="flex w-max items-center gap-6 animate-marquee">
+    {
+      loopItems.map((title) => (
+        <span class="flex items-center gap-6 whitespace-nowrap">
+          <span class="text-xs font-medium uppercase tracking-[0.15em] text-dusk-100/60">{title}</span>
+          <span class="text-dusk-300/40">&#8226;</span>
+        </span>
+      ))
+    }
+  </div>
+</section>

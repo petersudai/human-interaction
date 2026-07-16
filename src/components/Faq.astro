@@ -1,0 +1,19 @@
+---
+import Reveal from "./Reveal";
+import FaqAccordion from "./FaqAccordion";
+---
+
+<section id="faq" class="border-b border-ink-border bg-paper py-24 text-ink sm:py-32">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <Reveal client:visible className="mx-auto max-w-2xl text-center">
+      <span class="text-xs uppercase tracking-[0.15em] text-coral-600">FAQ</span>
+      <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-ink sm:text-5xl">
+        Questions worth answering upfront.
+      </h2>
+    </Reveal>
+
+    <div class="mt-16">
+      <FaqAccordion client:visible />
+    </div>
+  </div>
+</section>

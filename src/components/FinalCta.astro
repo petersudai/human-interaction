@@ -1,0 +1,51 @@
+---
+import Reveal from "./Reveal";
+import Magnetic from "./Magnetic";
+import { contact } from "../data/content";
+---
+
+<section class="grain relative overflow-hidden py-28 sm:py-36">
+  <div class="pointer-events-none absolute inset-0">
+    <div
+      class="absolute left-1/2 top-1/2 h-[70vw] w-[70vw] max-w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-dusk-600/25 via-transparent to-gold-600/25 blur-[100px]"
+    >
+    </div>
+  </div>
+  <div class="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
+    <Reveal client:visible>
+      <h2 class="text-balance font-display text-4xl leading-tight text-cream sm:text-5xl md:text-6xl">
+        Let's build something your customers actually want to use.
+      </h2>
+      <p class="mt-6 text-lg text-dusk-100/80">
+        Book a free 20-minute strategy call. No pitch deck, no pressure. Just a straight
+        answer on scope, timeline, and price.
+      </p>
+      <div class="mt-10 flex flex-col items-center gap-5">
+        <Magnetic client:visible>
+          <a
+            href={contact.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-8 py-4 text-base font-semibold text-ink shadow-glow-gold transition-transform duration-300 hover:scale-105"
+          >
+            Book your free strategy call →
+          </a>
+        </Magnetic>
+        <div class="flex items-center gap-6 text-sm text-dusk-100/70">
+          <a
+            href={contact.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline-offset-4 hover:text-cream hover:underline"
+          >
+            WhatsApp
+          </a>
+          <span class="text-ink-border">·</span>
+          <a href={`mailto:${contact.email}`} class="underline-offset-4 hover:text-cream hover:underline">
+            {contact.email}
+          </a>
+        </div>
+      </div>
+    </Reveal>
+  </div>
+</section>

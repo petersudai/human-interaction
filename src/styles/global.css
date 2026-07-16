@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* Fraunces: editorial display serif — swells at large optical sizes, has a genuine italic for emphasis words inside headlines */
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/fraunces/opsz-italic.css";
+/* Instrument Sans: body/UI grotesk — modern without being the same Inter every AI-built site reaches for */
+@import "@fontsource-variable/instrument-sans/wght.css";
+
+@theme {
+  --font-display: "Fraunces Variable", "Iowan Old Style", serif;
+  --font-sans: "Instrument Sans Variable", "Helvetica Neue", sans-serif;
+
+  /* Ink — warm-tinted near-black, the primary canvas */
+  --color-ink: #17151b;
+  --color-ink-2: #1e1b23;
+  --color-ink-3: #29252f;
+  --color-ink-border: #36313f;
+
+  /* Cream — the brush-stroke neutral, used for light-section breaks + primary text on dark */
+  --color-paper: #fbf7ee;
+  --color-cream: #f3ecdb;
+  --color-cream-dim: #e6dcc2;
+
+  /* Dusk — the actual muted teal-gray sampled from the top of the logo gradient, boosted slightly in saturation so it reads as a color and not flat gray */
+  --color-dusk-50: #f3f5f6;
+  --color-dusk-100: #e4eaeb;
+  --color-dusk-200: #c9d6d8;
+  --color-dusk-300: #acbfc3;
+  --color-dusk-400: #8ea9ad;
+  --color-dusk-500: #719298;
+  --color-dusk-600: #5c7a7f;
+  --color-dusk-700: #4a6367;
+  --color-dusk-800: #394c4f;
+  --color-dusk-900: #283638;
+
+  /* Gold — sampled from the bottom of the logo gradient */
+  --color-gold-50: #fcf7ed;
+  --color-gold-100: #f8eed7;
+  --color-gold-200: #f2deb0;
+  --color-gold-300: #ebcc84;
+  --color-gold-400: #e3ba58;
+  --color-gold-500: #dca72c;
+  --color-gold-600: #bc8d1e;
+  --color-gold-700: #997218;
+  --color-gold-800: #765813;
+  --color-gold-900: #533e0d;
+
+  /* Coral — bridging accent, reserved for CTAs so they pop against both dusk and gold */
+  --color-coral-400: #e37858;
+  --color-coral-500: #dc552c;
+  --color-coral-600: #bc431e;
+  --color-coral-700: #993618;
+
+  --shadow-glow-gold: 0 0 120px 0 rgba(220, 167, 44, 0.25);
+  --shadow-glow-dusk: 0 0 120px 0 rgba(113, 146, 152, 0.3);
+  --shadow-glow-gold-sm: 0 4px 24px -4px rgba(220, 167, 44, 0.45);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: var(--color-ink);
+}
+
+/* thin, warm-toned scrollbar so the default OS chrome doesn't fight the palette */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-border);
+  border-radius: 999px;
+  border: 2px solid var(--color-ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-dusk-500);
+}
+
+/* subtle film-grain overlay, echoes the textured paper of the logo mark */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -6%) scale(1.08); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-4%, 5%) scale(1.05); }
+}
+@keyframes float-c {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-46%, -54%) scale(1.15); }
+}
+.animate-float-a {
+  animation: float-a 16s ease-in-out infinite;
+}
+.animate-float-b {
+  animation: float-b 20s ease-in-out infinite;
+}
+.animate-float-c {
+  animation: float-c 24s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-a,
+  .animate-float-b,
+  .animate-float-c {
+    animation: none;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+.tilt-card {
+  transform: perspective(1000px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg))
+    translateY(var(--tilt-y, 0px));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.tilt-card:hover {
+  transition: transform 0.1s ease-out;
+}
