@@ -72,7 +72,7 @@ export default function HeroContent() {
           {leadWords.map((w, i) => (
             <Word key={`lead-${i}`}>{w}</Word>
           ))}
-          <Word className="bg-gradient-to-r from-gold-300 via-gold-400 to-coral-400 bg-clip-text italic text-transparent">
+          <Word className="text-shimmer bg-clip-text italic text-transparent">
             {hero.headlineEmphasis}
           </Word>
           {tailWords.map((w, i) => (
