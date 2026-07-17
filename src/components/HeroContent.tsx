@@ -55,7 +55,7 @@ export default function HeroContent() {
     >
       <motion.span
         variants={item}
-        className="mb-4 inline-flex items-center gap-2 rounded-full border border-ink-border bg-ink-2/60 px-4 py-1 text-xs font-medium uppercase tracking-[0.15em] text-gold-300 sm:mb-5"
+        className="mb-5 inline-flex items-center gap-2 rounded-full border border-ink-border bg-ink-2/60 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.15em] text-gold-300 sm:mb-6"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
         {hero.eyebrow}
@@ -63,7 +63,7 @@ export default function HeroContent() {
 
       <motion.h1
         variants={headlineContainer}
-        className="text-balance font-display text-[11vw] leading-[1.05] tracking-tight text-cream sm:text-6xl sm:leading-[1.03] md:text-7xl lg:text-[5.25rem]"
+        className="text-balance font-display text-[12vw] leading-[1.05] tracking-tight text-cream sm:text-6xl sm:leading-[1.03] md:text-7xl lg:text-[5.25rem]"
       >
         <span className="sr-only">
           {hero.headlineLead} {hero.headlineEmphasis} {hero.headlineTail}
@@ -83,12 +83,12 @@ export default function HeroContent() {
 
       <motion.p
         variants={item}
-        className="mt-4 max-w-2xl text-balance text-base leading-relaxed text-dusk-100/85 sm:mt-6 sm:text-lg md:text-xl"
+        className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-dusk-100/85 sm:mt-7 sm:text-lg md:text-xl"
       >
         {hero.sub}
       </motion.p>
 
-      <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3 sm:mt-8 sm:flex-row">
+      <motion.div variants={item} className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row">
         <Magnetic>
           <a
             href={contact.bookingUrl}

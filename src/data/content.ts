@@ -28,7 +28,7 @@ export const hero = {
   headlineLead: "Software that turns",
   headlineEmphasis: "visitors",
   headlineTail: "into customers.",
-  sub: "Human Interaction designs and builds fast, high-end websites and software for ambitious businesses, creatives, and founders, wherever they're based. A real team behind every line, and a real person who picks up the phone.",
+  sub: "Human Interaction designs and builds fast, high-end websites and software for ambitious businesses, creatives, and founders, wherever they're based.",
   primaryCta: "Book a free strategy call",
   secondaryCta: "See our work",
 };
