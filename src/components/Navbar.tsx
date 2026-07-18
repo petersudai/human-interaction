@@ -24,15 +24,15 @@ export default function Navbar() {
         scrolled ? "bg-ink/85 backdrop-blur-md border-b border-ink-border" : "bg-transparent border-b border-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <a href="#top" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8">
+        <a href="#top" className="flex items-center gap-2.5 justify-self-start" onClick={() => setOpen(false)}>
           <LogoMark size={34} />
           <span className="font-display text-lg italic tracking-tight text-cream">
             {brand.name}
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-8 justify-self-center md:col-start-2 md:flex">
           {nav.map((item) => (
             <a
               key={item.href}
@@ -45,7 +45,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 justify-self-end md:col-start-3">
           <a
             href={contact.bookingUrl}
             target="_blank"
