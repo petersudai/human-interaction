@@ -12,12 +12,19 @@ import { process } from "../data/content";
       </h2>
     </Reveal>
 
-    <div class="relative mt-16 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="pointer-events-none absolute inset-x-0 top-6 hidden h-px bg-ink/15 lg:block"></div>
+    <div id="process-grid" class="relative mt-16 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="pointer-events-none absolute inset-x-0 top-7 hidden lg:block">
+        <div class="h-px w-full bg-ink/12"></div>
+        <div
+          id="process-line-fill"
+          class="absolute inset-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-dusk-500 via-gold-500 to-coral-500"
+        >
+        </div>
+      </div>
       {
         process.map((p, i) => (
           <Reveal client:visible delay={i * 0.1} className="relative flex flex-col items-start gap-4">
-            <span class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-ink/20 bg-paper font-display text-lg text-coral-600">
+            <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-ink/15 bg-gradient-to-br from-dusk-100 to-gold-100 font-display text-lg text-coral-700 shadow-sm">
               {p.step}
             </span>
             <h3 class="font-display text-xl text-ink">{p.title}</h3>
@@ -28,3 +35,33 @@ import { process } from "../data/content";
     </div>
   </div>
 </section>
+
+<script>
+  const grid = document.getElementById("process-grid");
+  const fill = document.getElementById("process-line-fill");
+  let ticking = false;
+
+  function update() {
+    ticking = false;
+    if (!grid || !fill) return;
+    const rect = grid.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const triggerStart = vh * 0.85;
+    const triggerEnd = vh * 0.35;
+    const total = rect.height + (triggerStart - triggerEnd);
+    const passed = triggerStart - rect.top;
+    const progress = Math.min(1, Math.max(0, passed / total));
+    fill.style.transform = `scaleX(${progress})`;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }
+
+  update();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+</script>
