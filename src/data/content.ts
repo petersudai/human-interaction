@@ -33,6 +33,13 @@ export const hero = {
   secondaryCta: "See our work",
 };
 
+export const mission = {
+  eyebrow: "Founded 2024",
+  mission: "To change one person's life every day.",
+  vision: "Democratize access to software.",
+  note: "Human Interaction builds full-stack software for businesses and consumers alike, and helps the right audience find it, whether we built it or not.",
+};
+
 export const services = [
   {
     title: "Company websites",
