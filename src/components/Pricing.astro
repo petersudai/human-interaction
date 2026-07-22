@@ -1,6 +1,6 @@
 ---
 import Reveal from "./Reveal";
-import { contact, pricingTiers } from "../data/content";
+import { contact, guarantee, pricingTiers } from "../data/content";
 ---
 
 <section id="pricing" class="border-b border-ink-border py-24 sm:py-32">
@@ -58,5 +58,11 @@ import { contact, pricingTiers } from "../data/content";
         ))
       }
     </div>
+
+    <Reveal client:visible delay={0.3} className="mt-12 text-center">
+      <p class="text-sm font-medium text-gold-300">
+        <span aria-hidden="true">✓</span> {guarantee}
+      </p>
+    </Reveal>
   </div>
 </section>

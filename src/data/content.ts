@@ -212,6 +212,8 @@ export const pricingTiers = [
   },
 ];
 
+export const guarantee = "Unlimited revisions until it's right. No fine print, no upcharges.";
+
 export const faqs = [
   {
     question: "How fast can you actually turn a project around?",
