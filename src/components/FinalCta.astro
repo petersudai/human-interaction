@@ -1,7 +1,8 @@
 ---
 import Reveal from "./Reveal";
 import Magnetic from "./Magnetic";
-import { contact } from "../data/content";
+import AuditForm from "./AuditForm";
+import { contact, urgency } from "../data/content";
 ---
 
 <section class="grain relative overflow-hidden py-28 sm:py-36">
@@ -31,6 +32,7 @@ import { contact } from "../data/content";
             Book your free strategy call →
           </a>
         </Magnetic>
+        <p class="text-xs text-dusk-100/50">{urgency}</p>
         <div class="flex items-center gap-6 text-sm text-dusk-100/70">
           <a
             href={contact.whatsapp}
@@ -45,6 +47,15 @@ import { contact } from "../data/content";
             {contact.email}
           </a>
         </div>
+      </div>
+    </Reveal>
+
+    <Reveal client:visible delay={0.15} className="mt-16 border-t border-ink-border pt-10">
+      <p class="text-sm text-dusk-100/60">
+        Not ready to talk yet? Get a free 5-point audit of your current site instead.
+      </p>
+      <div class="mt-5 flex justify-center">
+        <AuditForm client:visible />
       </div>
     </Reveal>
   </div>

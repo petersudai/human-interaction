@@ -13,7 +13,12 @@ export const contact = {
   // TODO: replace with the real WhatsApp number, digits only, country code first
   whatsapp: "https://wa.me/10000000000",
   email: "hello@humaninteraction.net", // TODO: confirm real inbox
+  // TODO: sign up free at formspree.io, create a form, and paste your endpoint here
+  // e.g. "https://formspree.io/f/abcdwxyz" — this is a public form ID, not a secret
+  auditFormEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
 };
+
+export const urgency = "Most projects go live within 2 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
 
 export const nav = [
   { label: "Services", href: "#services" },
