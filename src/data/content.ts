@@ -18,7 +18,7 @@ export const contact = {
   auditFormEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
 };
 
-export const urgency = "Most projects go live within 2 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
+export const urgency = "Most projects go live within 1 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
 
 export const nav = [
   { label: "Services", href: "#services" },
@@ -182,7 +182,7 @@ export const pricingTiers = [
       "Custom design, no templates",
       "Mobile-first & fast",
       "Basic SEO setup",
-      "2 week turnaround",
+      "1 to 2 week turnaround",
     ],
     cta: "Book a call",
     highlighted: false,
@@ -217,13 +217,13 @@ export const pricingTiers = [
   },
 ];
 
-export const guarantee = "Unlimited revisions until it's right. No fine print, no upcharges.";
+export const guarantee = "Two rounds of revisions included in every project. No surprise fees, no fine print.";
 
 export const faqs = [
   {
     question: "How fast can you actually turn a project around?",
     answer:
-      "Most marketing sites ship in 2 to 3 weeks from signed scope. Web apps and MVPs typically run 4 to 8 weeks depending on scope. You'll get a firm timeline before any work starts.",
+      "A focused marketing site can ship in as little as a week with a clear brief, most run 1 to 2 weeks once revisions and content are factored in. Web apps and MVPs typically run 3 to 6 weeks depending on scope. You'll get a firm timeline before any work starts.",
   },
   {
     question: "Who do we actually talk to during the project?",
