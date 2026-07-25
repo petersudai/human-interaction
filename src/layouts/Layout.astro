@@ -31,7 +31,7 @@ const {
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/logo.png" />
+    <meta property="og:image" content={new URL("/logo.png", Astro.site)} />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
