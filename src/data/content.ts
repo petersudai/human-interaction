@@ -10,8 +10,7 @@ export const brand = {
 export const contact = {
   // TODO: replace with the real Calendly (or Cal.com) booking link
   bookingUrl: "https://calendly.com/human-interaction/intro-call",
-  // TODO: replace with the real WhatsApp number, digits only, country code first
-  whatsapp: "https://wa.me/10000000000",
+  whatsapp: "https://wa.me/14709523286",
   email: "hello@humaninteraction.net", // TODO: confirm real inbox
   // TODO: sign up free at formspree.io, create a form, and paste your endpoint here
   // e.g. "https://formspree.io/f/abcdwxyz" — this is a public form ID, not a secret
