@@ -1,7 +1,7 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
-import Reveal from "./Reveal";
+import Reveal from "./Reveal.astro";
 import { caseStudies } from "../data/content";
 
 // Falls back to a styled placeholder panel until real screenshots land in public/work/
@@ -13,7 +13,7 @@ const items = caseStudies.map((c) => ({
 
 <section id="work" class="border-b border-ink-border py-24 sm:py-32">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <Reveal client:visible className="max-w-2xl">
+    <Reveal class="max-w-2xl">
       <span class="text-xs uppercase tracking-[0.15em] text-gold-300">Our work</span>
       <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-cream sm:text-5xl">
         Selected work.
@@ -23,7 +23,7 @@ const items = caseStudies.map((c) => ({
     <div class="mt-16 grid gap-8 md:grid-cols-2">
       {
         items.map((c, i) => (
-          <Reveal client:visible delay={i * 0.1} className="h-full">
+          <Reveal delay={i * 0.1} class="h-full">
             <a
               href={c.link}
               target="_blank"

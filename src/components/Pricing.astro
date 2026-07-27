@@ -1,11 +1,11 @@
 ---
-import Reveal from "./Reveal";
+import Reveal from "./Reveal.astro";
 import { contact, guarantee, pricingTiers } from "../data/content";
 ---
 
 <section id="pricing" class="border-b border-ink-border py-24 sm:py-32">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <Reveal client:visible className="mx-auto max-w-2xl text-center">
+    <Reveal class="mx-auto max-w-2xl text-center">
       <span class="text-xs uppercase tracking-[0.15em] text-gold-300">Investment</span>
       <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-cream sm:text-5xl">
         Straightforward pricing. No surprise invoices.
@@ -18,10 +18,8 @@ import { contact, guarantee, pricingTiers } from "../data/content";
     <div class="mt-16 grid gap-6 lg:grid-cols-3 lg:items-center">
       {
         pricingTiers.map((t, i) => (
-          <Reveal
-            client:visible
-            delay={i * 0.1}
-            className={`presence relative rounded-3xl border p-8 ${
+          <Reveal delay={i * 0.1}
+            class={`presence relative rounded-3xl border p-8 ${
               t.highlighted
                 ? "border-gold-400/60 bg-gradient-to-b from-gold-900/25 to-ink-2 shadow-glow-gold lg:scale-105 lg:py-10"
                 : "border-ink-border bg-ink-2/40"
@@ -59,7 +57,7 @@ import { contact, guarantee, pricingTiers } from "../data/content";
       }
     </div>
 
-    <Reveal client:visible delay={0.3} className="mt-12 text-center">
+    <Reveal delay={0.3} class="mt-12 text-center">
       <p class="text-sm font-medium text-gold-300">
         <span aria-hidden="true">✓</span> {guarantee}
       </p>

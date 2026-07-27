@@ -1,11 +1,11 @@
 ---
-import Reveal from "./Reveal";
+import Reveal from "./Reveal.astro";
 import { process } from "../data/content";
 ---
 
 <section id="process" class="relative bg-paper py-24 text-ink sm:py-32">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <Reveal client:visible className="max-w-2xl">
+    <Reveal class="max-w-2xl">
       <span class="text-xs uppercase tracking-[0.15em] text-coral-600">How we work</span>
       <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-ink sm:text-5xl">
         A clear process. No black box, no surprises.
@@ -23,7 +23,7 @@ import { process } from "../data/content";
       </div>
       {
         process.map((p, i) => (
-          <Reveal client:visible delay={i * 0.1} className="relative flex flex-col items-start gap-4">
+          <Reveal delay={i * 0.1} class="relative flex flex-col items-start gap-4">
             <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-ink/15 bg-gradient-to-br from-dusk-100 to-gold-100 font-display text-lg text-coral-700 shadow-sm">
               {p.step}
             </span>

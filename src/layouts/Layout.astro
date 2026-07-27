@@ -36,10 +36,38 @@ const {
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <!-- .reveal starts at opacity 0 and is un-hidden by script. Without JS that
+         would hide most of the page, so opt out entirely. -->
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <slot />
     <BackToTop client:load />
+
+    <script>
+      // Scroll reveal — one observer for every .reveal on the page, replacing
+      // what used to be a React island each.
+      const revealIO = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-in");
+              revealIO.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -80px 0px" }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => revealIO.observe(el));
+    </script>
 
     <script>
       // Presence — one delegated listener for every .presence surface on the
