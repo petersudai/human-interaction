@@ -2,17 +2,16 @@
 import Reveal from "./Reveal";
 import Magnetic from "./Magnetic";
 import AuditForm from "./AuditForm";
+import VideoField from "./VideoField.astro";
 import { contact, urgency } from "../data/content";
 ---
 
 <section class="grain relative overflow-hidden py-28 sm:py-36">
-  <div class="pointer-events-none absolute inset-0">
-    <div
-      class="absolute left-1/2 top-1/2 h-[70vw] w-[70vw] max-w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-dusk-600/25 via-transparent to-gold-600/25 blur-[100px]"
-    >
-    </div>
-  </div>
-  <div class="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
+  <VideoField opacity={0.5} lift={0.22} veil presence />
+  <div
+    class="presence relative z-10 mx-auto max-w-3xl rounded-3xl px-5 text-center sm:px-8"
+    style="--presence-size: 620px; --presence-strength: 0.14"
+  >
     <Reveal client:visible>
       <h2 class="text-balance font-display text-4xl leading-tight text-cream sm:text-5xl md:text-6xl">
         Let's build something your customers actually want to use.

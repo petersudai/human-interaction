@@ -1,22 +1,16 @@
 ---
 import HeroContent from "./HeroContent";
+import VideoField from "./VideoField.astro";
 ---
 
 <section id="top" class="grain relative flex h-[100svh] items-center overflow-hidden pt-20 pb-12">
-  <div class="pointer-events-none absolute inset-0">
-    <div
-      class="animate-float-a absolute -left-1/4 top-[-10%] h-[55vw] w-[55vw] max-w-[700px] rounded-full bg-dusk-600/35 blur-[110px]"
-    >
-    </div>
-    <div
-      class="animate-float-b absolute -right-1/4 bottom-[-15%] h-[50vw] w-[50vw] max-w-[650px] rounded-full bg-gold-600/25 blur-[110px]"
-    >
-    </div>
-    <div
-      class="animate-float-c absolute left-1/2 top-1/2 h-[40vw] w-[40vw] max-w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-coral-600/15 blur-[130px]"
-    >
-    </div>
-  </div>
+  <!--
+    Held darker than the default so the headline reads. `lift` is pulled down
+    too: that pass brightens the shadows, which is exactly the contrast the
+    cream type needs. Saturation is nudged up to keep the colour from going
+    flat at the lower brightness.
+  -->
+  <VideoField presence veil brightness={0.7} lift={0.2} saturate={1.2} />
 
   <HeroContent client:load />
 

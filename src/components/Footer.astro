@@ -1,12 +1,14 @@
 ---
 import LogoMark from "./LogoMark";
+import VideoField from "./VideoField.astro";
 import { brand, contact, nav } from "../data/content";
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-ink py-14">
-  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+<footer class="relative overflow-hidden bg-ink py-14">
+  <VideoField opacity={0.28} lift={0.2} veil presence={false} />
+  <div class="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
     <div class="flex flex-col gap-10 border-b border-ink-border pb-10 sm:flex-row sm:justify-between">
       <div class="max-w-xs">
         <a href="#top" class="flex items-center gap-2.5">

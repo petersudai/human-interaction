@@ -29,7 +29,8 @@ const items = caseStudies.map((c) => ({
               target="_blank"
               rel="noopener noreferrer"
               data-tilt
-              class="tilt-card group flex h-full flex-col overflow-hidden rounded-2xl border border-ink-border bg-ink-2/40"
+              style="--presence-size: 340px; --presence-strength: 0.18"
+              class="presence tilt-card group flex h-full flex-col overflow-hidden rounded-2xl border border-ink-border bg-ink-2/40"
             >
               <div class="relative aspect-[16/10] overflow-hidden">
                 {c.hasImage ? (
