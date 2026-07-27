@@ -18,6 +18,18 @@ export const contact = {
 
 export const urgency = "Most projects go live within 1 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
 
+export const heroVideo = {
+  // TODO: self-host this. It's a third-party CDN we don't control, and the hero
+  // depends on it — drop the .mp4 in public/ and change this to "/hero.mp4".
+  src: "https://cdn.sceneai.art/Hero%20Section%20Video/50b4f304-cdca-4e12-8735-580d225834be.mp4",
+  // The clip is not authored to loop: its last frame is further from its first
+  // than two random frames are, so the wrap is a hard cut. Two copies are
+  // dissolved across it instead. Seconds.
+  dissolve: 1.1,
+  // Slower than 1x means fewer wraps to hide, and it reads calmer.
+  pace: 0.8,
+};
+
 export const nav = [
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },

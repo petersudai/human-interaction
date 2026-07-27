@@ -1,10 +1,12 @@
 ---
 import Reveal from "./Reveal";
+import VideoField from "./VideoField.astro";
 import { mission } from "../data/content";
 ---
 
-<section class="border-b border-ink-border py-24 sm:py-32">
-  <div class="mx-auto max-w-5xl px-5 sm:px-8">
+<section class="relative overflow-hidden border-b border-ink-border py-24 sm:py-32">
+  <VideoField opacity={0.3} lift={0.2} veil presence={false} />
+  <div class="relative z-10 mx-auto max-w-5xl px-5 sm:px-8">
     <Reveal client:visible className="text-center">
       <span class="text-xs uppercase tracking-[0.15em] text-gold-300">{mission.eyebrow}</span>
     </Reveal>

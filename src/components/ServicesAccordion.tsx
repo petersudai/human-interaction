@@ -1,6 +1,10 @@
 import { useState } from "react";
+import type { CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { services } from "../data/content";
+
+// custom properties aren't in CSSProperties, so they need the cast
+const rowPresence = { "--presence-size": "520px", "--presence-strength": "0.12" } as CSSProperties;
 
 export default function ServicesAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -13,7 +17,8 @@ export default function ServicesAccordion() {
           <div key={s.title} className="border-b border-ink-border">
             <button
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="group flex w-full items-center gap-6 py-7 text-left transition-colors duration-300 hover:bg-ink-2/40 sm:px-6"
+              style={rowPresence}
+              className="presence group flex w-full items-center gap-6 py-7 text-left transition-colors duration-300 hover:bg-ink-2/40 sm:px-6"
               aria-expanded={isOpen}
             >
               <span className="w-10 flex-none font-display text-lg text-dusk-300/60 sm:w-12">
