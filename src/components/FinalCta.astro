@@ -1,5 +1,5 @@
 ---
-import Reveal from "./Reveal";
+import Reveal from "./Reveal.astro";
 import Magnetic from "./Magnetic";
 import AuditForm from "./AuditForm";
 import VideoField from "./VideoField.astro";
@@ -12,7 +12,7 @@ import { contact, urgency } from "../data/content";
     class="presence relative z-10 mx-auto max-w-3xl rounded-3xl px-5 text-center sm:px-8"
     style="--presence-size: 620px; --presence-strength: 0.14"
   >
-    <Reveal client:visible>
+    <Reveal >
       <h2 class="text-balance font-display text-4xl leading-tight text-cream sm:text-5xl md:text-6xl">
         Let's build something your customers actually want to use.
       </h2>
@@ -37,19 +37,22 @@ import { contact, urgency } from "../data/content";
             href={contact.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            class="underline-offset-4 hover:text-cream hover:underline"
+            class="-my-2 inline-block py-3 underline-offset-4 transition-colors hover:text-cream hover:underline"
           >
             WhatsApp
           </a>
           <span class="text-ink-border">·</span>
-          <a href={`mailto:${contact.email}`} class="underline-offset-4 hover:text-cream hover:underline">
+          <a
+            href={`mailto:${contact.email}`}
+            class="-my-2 inline-block py-3 underline-offset-4 transition-colors hover:text-cream hover:underline"
+          >
             {contact.email}
           </a>
         </div>
       </div>
     </Reveal>
 
-    <Reveal client:visible delay={0.15} className="mt-16 border-t border-ink-border pt-10">
+    <Reveal delay={0.15} class="mt-16 border-t border-ink-border pt-10">
       <p class="text-sm text-dusk-100/60">
         Not ready to talk yet? Get a free 5-point audit of your current site instead.
       </p>

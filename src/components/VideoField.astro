@@ -21,6 +21,12 @@ interface Props {
   brightness?: number;
   /** Strength of the shadow-lift pass. */
   lift?: number;
+  /**
+   * Load immediately. Exactly one field per page should be eager (the hero).
+   * Everything else attaches its source only when it scrolls close, so a phone
+   * isn't buffering the same clip in several decoders at once.
+   */
+  eager?: boolean;
 }
 
 const {
@@ -34,6 +40,7 @@ const {
   saturate = 1.15,
   brightness = 0.96,
   lift = 0.3,
+  eager = false,
 } = Astro.props;
 ---
 
@@ -43,19 +50,27 @@ const {
   data-dissolve={String(dissolve)}
   data-pace={String(pace)}
   data-presence={presence ? "1" : "0"}
+  data-eager={eager ? "1" : "0"}
+  data-src={src}
   aria-hidden="true"
   style={`--vf-sat:${saturate}; --vf-bri:${brightness}; --vf-lift:${lift}; --vf-opacity:${opacity}`}
 >
   <div class="video-field__stack">
-    <video class="video-field__v" data-vf-a src={src} muted playsinline preload="auto" style="z-index:1"
-    ></video>
+    <video
+      class="video-field__v"
+      data-vf-a
+      src={eager ? src : undefined}
+      muted
+      playsinline
+      preload={eager ? "auto" : "none"}
+      style="z-index:1"></video>
     <video
       class="video-field__v"
       data-vf-b
-      src={src}
+      src={eager ? src : undefined}
       muted
       playsinline
-      preload="auto"
+      preload={eager ? "auto" : "none"}
       style="z-index:2; opacity:0"></video>
   </div>
 
@@ -177,6 +192,25 @@ const {
     const dissolve = Number(field.dataset.dissolve) || 1.1;
     const pace = Number(field.dataset.pace) || 0.8;
     const wantsPresence = field.dataset.presence === "1";
+    const eager = field.dataset.eager === "1";
+    const source = field.dataset.src || "";
+
+    // Two decoders per field is worth it for the hero, but not for decoration
+    // on a phone. Below md, secondary fields run one copy and accept the seam.
+    const narrow = window.matchMedia("(max-width: 767px)").matches;
+    const useCrossfade = eager || !narrow;
+
+    let sourceAttached = eager;
+    const attachSource = () => {
+      if (sourceAttached || !source) return;
+      sourceAttached = true;
+      vA.preload = "auto";
+      vA.src = source;
+      if (useCrossfade) {
+        vB.preload = "auto";
+        vB.src = source;
+      }
+    };
 
     const restSat = Number(getComputedStyle(field).getPropertyValue("--vf-sat")) || 1.15;
     const restBri = Number(getComputedStyle(field).getPropertyValue("--vf-bri")) || 0.96;
@@ -234,6 +268,10 @@ const {
 
     const tick = () => {
       if (!live || !visible) return;
+      if (!useCrossfade) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
       const d = front.duration;
       if (d && isFinite(d)) {
         const remaining = d - front.currentTime;
@@ -269,14 +307,46 @@ const {
       if (visible) rafId = requestAnimationFrame(tick);
     };
 
+    if (!useCrossfade) vA.loop = true;
+
     if (reduceMotion) {
       // no playback; a loaded, paused video holds its first frame
-      if (vA.readyState >= 2) goLive();
-      else vA.addEventListener("loadeddata", goLive, { once: true });
+      const hold = () => {
+        if (vA.readyState >= 2) goLive();
+        else vA.addEventListener("loadeddata", goLive, { once: true });
+      };
+      if (eager) hold();
+      else {
+        const once = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              attachSource();
+              hold();
+              once.disconnect();
+            }
+          },
+          { rootMargin: "200px" }
+        );
+        once.observe(field);
+      }
       return;
     }
 
     vA.addEventListener("playing", goLive, { once: true });
+
+    /* ---- attach the source just before it's needed ---- */
+    if (!eager) {
+      const pre = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            attachSource();
+            pre.disconnect();
+          }
+        },
+        { rootMargin: "300px" }
+      );
+      pre.observe(field);
+    }
 
     /* ---- only decode while on screen ---- */
     const io = new IntersectionObserver(
@@ -284,6 +354,7 @@ const {
         entries.forEach((entry) => {
           visible = entry.isIntersecting;
           if (visible) {
+            attachSource();
             void front.play().catch(() => {});
             cancelAnimationFrame(rafId);
             if (live) rafId = requestAnimationFrame(tick);

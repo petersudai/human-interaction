@@ -30,6 +30,10 @@ export const heroVideo = {
   pace: 0.8,
 };
 
+// Shown in the navbar next to a live dot. Deliberately month-free so it can't
+// go stale — change it to "Booked through March" etc. when that's true.
+export const availability = "Taking new projects";
+
 export const nav = [
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },

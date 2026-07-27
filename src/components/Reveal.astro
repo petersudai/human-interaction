@@ -1,0 +1,20 @@
+---
+/**
+ * Scroll reveal. Previously a React island running Framer Motion; this is the
+ * same motion in CSS, driven by one shared IntersectionObserver in Layout.astro.
+ * Used ~17 times per page, so that's 17 fewer hydration points on mobile.
+ */
+interface Props {
+  class?: string;
+  /** seconds */
+  delay?: number;
+  /** starting offset in px */
+  y?: number;
+}
+
+const { class: className = "", delay = 0, y = 28 } = Astro.props;
+---
+
+<div class:list={["reveal", className]} style={`--reveal-delay:${delay}s; --reveal-y:${y}px`}>
+  <slot />
+</div>

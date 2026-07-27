@@ -24,7 +24,7 @@ const year = new Date().getFullYear();
             {
               nav.map((n) => (
                 <li>
-                  <a href={n.href} class="text-sm text-dusk-100/80 hover:text-cream">
+                  <a href={n.href} class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream">
                     {n.label}
                   </a>
                 </li>
@@ -40,7 +40,7 @@ const year = new Date().getFullYear();
                 href={contact.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-sm text-dusk-100/80 hover:text-cream"
+                class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream"
               >
                 Book a call
               </a>
@@ -50,13 +50,13 @@ const year = new Date().getFullYear();
                 href={contact.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-sm text-dusk-100/80 hover:text-cream"
+                class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream"
               >
                 WhatsApp
               </a>
             </li>
             <li>
-              <a href={`mailto:${contact.email}`} class="text-sm text-dusk-100/80 hover:text-cream">
+              <a href={`mailto:${contact.email}`} class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream">
                 {contact.email}
               </a>
             </li>
