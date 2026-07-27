@@ -49,7 +49,7 @@ export default function Navbar() {
       />
 
       <div
-        className={`relative mx-auto flex w-full items-center justify-between px-5 py-4 transition-all duration-500 md:overflow-hidden md:rounded-2xl md:border md:py-2 md:pl-4 md:pr-2 md:shadow-2xl md:shadow-black/20 md:backdrop-blur-xl ${
+        className={`relative mx-auto flex w-full items-center justify-between px-5 py-4 transition-all duration-500 md:grid md:grid-cols-[1fr_auto_1fr] md:overflow-hidden md:rounded-2xl md:border md:py-2 md:pl-4 md:pr-2 md:shadow-2xl md:shadow-black/20 md:backdrop-blur-xl ${
           scrolled
             ? "max-w-7xl md:max-w-4xl md:border-cream/15 md:bg-ink/75"
             : "max-w-7xl md:max-w-5xl md:border-cream/10 md:bg-ink/45"
@@ -57,7 +57,7 @@ export default function Navbar() {
       >
         <a
           href="#top"
-          className="flex shrink-0 items-center gap-2.5"
+          className="flex shrink-0 items-center gap-2.5 md:justify-self-start"
           onClick={() => setOpen(false)}
         >
           <LogoMark size={30} />
@@ -66,8 +66,12 @@ export default function Navbar() {
           </span>
         </a>
 
-        {/* Sliding indicator follows the cursor between links. */}
-        <div className="hidden items-center gap-0.5 md:flex" onMouseLeave={() => setHovered(null)}>
+        {/* True centre column regardless of how wide the logo or actions are.
+            Sliding indicator follows the cursor between links. */}
+        <div
+          className="hidden items-center gap-0.5 md:col-start-2 md:flex md:justify-self-center"
+          onMouseLeave={() => setHovered(null)}
+        >
           {nav.map((item, i) => (
             <a
               key={item.href}
@@ -87,12 +91,12 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3 md:col-start-3 md:justify-self-end">
           <a
             href={contact.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group hidden items-center gap-1.5 rounded-xl bg-cream px-4 py-2 text-sm font-semibold text-ink transition-colors duration-300 hover:bg-paper md:inline-flex"
+            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-4 py-2 text-sm font-semibold text-ink shadow-glow-gold-sm transition-transform duration-300 hover:scale-105 md:inline-flex"
           >
             Book a call
             <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">
