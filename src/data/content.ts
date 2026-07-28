@@ -11,9 +11,7 @@ export const contact = {
   bookingUrl: "https://calendly.com/humaninteract",
   whatsapp: "https://wa.me/14709523286",
   email: "hi@humaninteraction.net",
-  // TODO: sign up free at formspree.io, create a form, and paste your endpoint here
-  // e.g. "https://formspree.io/f/abcdwxyz" — this is a public form ID, not a secret
-  auditFormEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
+  auditFormEndpoint: "https://formspree.io/f/mykrodpy",
 };
 
 export const urgency = "Most projects go live within 1 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
