@@ -26,6 +26,8 @@ import { contact, urgency } from "../data/content";
             href={contact.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-calendly
+            data-ga-event="book_call"
             class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-8 py-4 text-base font-semibold text-ink shadow-glow-gold transition-transform duration-300 hover:scale-105"
           >
             Book your free strategy call →
@@ -37,6 +39,7 @@ import { contact, urgency } from "../data/content";
             href={contact.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
+            data-ga-event="whatsapp_click"
             class="-my-2 inline-block py-3 underline-offset-4 transition-colors hover:text-cream hover:underline"
           >
             WhatsApp
@@ -44,6 +47,7 @@ import { contact, urgency } from "../data/content";
           <span class="text-ink-border">·</span>
           <a
             href={`mailto:${contact.email}`}
+            data-ga-event="email_click"
             class="-my-2 inline-block py-3 underline-offset-4 transition-colors hover:text-cream hover:underline"
           >
             {contact.email}

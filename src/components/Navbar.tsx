@@ -96,6 +96,8 @@ export default function Navbar() {
             href={contact.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-calendly
+            data-ga-event="book_call"
             className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-4 py-2 text-sm font-semibold text-ink shadow-glow-gold-sm transition-transform duration-300 hover:scale-105 md:inline-flex"
           >
             Book a call
@@ -161,6 +163,8 @@ export default function Navbar() {
                 href={contact.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-calendly
+                data-ga-event="book_call"
                 className="mt-3 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-5 py-3.5 text-center text-sm font-semibold text-ink"
               >
                 Book a free strategy call

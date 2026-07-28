@@ -94,6 +94,8 @@ export default function HeroContent() {
             href={contact.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-calendly
+            data-ga-event="book_call"
             className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-gold-500 to-coral-500 px-6 py-3 text-sm font-semibold text-ink shadow-glow-gold sm:px-7 sm:py-3.5 transition-transform duration-300 hover:scale-105"
           >
             {hero.primaryCta}

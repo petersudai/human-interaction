@@ -40,6 +40,8 @@ const year = new Date().getFullYear();
                 href={contact.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-calendly
+                data-ga-event="book_call"
                 class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream"
               >
                 Book a call
@@ -50,13 +52,14 @@ const year = new Date().getFullYear();
                 href={contact.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-ga-event="whatsapp_click"
                 class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream"
               >
                 WhatsApp
               </a>
             </li>
             <li>
-              <a href={`mailto:${contact.email}`} class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream">
+              <a href={`mailto:${contact.email}`} data-ga-event="email_click" class="-my-2 inline-block py-3 text-sm text-dusk-100/80 transition-colors hover:text-cream">
                 {contact.email}
               </a>
             </li>

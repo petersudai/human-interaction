@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import BackToTop from "../components/BackToTop";
+import { contact, gaMeasurementId } from "../data/content";
 
 interface Props {
   title?: string;
@@ -11,6 +12,32 @@ const {
   title = "Human Interaction | Web & software built to sell",
   description = "Human Interaction designs and builds fast, high-end websites and software for ambitious businesses, creatives, and founders, wherever they're based.",
 } = Astro.props;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const logoUrl = new URL("/logo.png", Astro.site);
+
+// ProfessionalService structured data. Keep the entity intentionally generic
+// (no legal name, no street address) — matches how the rest of the copy
+// stays quiet about company structure.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Human Interaction",
+  url: Astro.site?.toString(),
+  logo: logoUrl.toString(),
+  image: logoUrl.toString(),
+  description,
+  email: contact.email,
+  telephone: "+14709523286",
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Atlanta",
+    addressRegion: "GA",
+    addressCountry: "US",
+  },
+  areaServed: ["United States", "Worldwide"],
+};
 ---
 
 <!doctype html>
@@ -22,20 +49,43 @@ const {
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
+    <link rel="canonical" href={pageUrl} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#17151b" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Human Interaction" />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL("/logo.png", Astro.site)} />
+    <meta property="og:image" content={logoUrl} />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={logoUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    {
+      gaMeasurementId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
+          <script define:vars={{ gaMeasurementId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              window.dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+            gtag("config", gaMeasurementId);
+          </script>
+        </>
+      )
+    }
 
     <!-- .reveal starts at opacity 0 and is un-hidden by script. Without JS that
          would hide most of the page, so opt out entirely. -->
@@ -51,6 +101,7 @@ const {
   <body>
     <slot />
     <BackToTop client:load />
+    <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
     <script>
       // Scroll reveal — one observer for every .reveal on the page, replacing
@@ -86,6 +137,34 @@ const {
         },
         { passive: true }
       );
+    </script>
+
+    <script define:vars={{ bookingUrl: contact.bookingUrl }}>
+      // Book-a-call links keep their real href (progressive enhancement, and
+      // middle-click/ctrl-click still opens Calendly in a new tab as normal).
+      // Once the widget script has loaded, a plain left-click opens Calendly's
+      // popup overlay instead so people never leave the page. The same click
+      // also fires a GA4 event if analytics is wired up.
+      document.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+        const el = target.closest("[data-ga-event], [data-calendly]");
+        if (!el) return;
+
+        const eventName = el.getAttribute("data-ga-event");
+        if (eventName && typeof window.gtag === "function") {
+          const tier = el.getAttribute("data-ga-tier");
+          window.gtag("event", eventName, tier ? { tier } : {});
+        }
+
+        if (el.hasAttribute("data-calendly")) {
+          const modified = e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+          if (!modified && typeof window.Calendly !== "undefined") {
+            e.preventDefault();
+            window.Calendly.initPopupWidget({ url: el.getAttribute("href") || bookingUrl });
+          }
+        }
+      });
     </script>
   </body>
 </html>

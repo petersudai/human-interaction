@@ -14,6 +14,9 @@ export default function AuditForm() {
         body: new FormData(e.currentTarget),
       });
       setStatus(res.ok ? "success" : "error");
+      if (res.ok && typeof window.gtag === "function") {
+        window.gtag("event", "audit_form_submit");
+      }
     } catch {
       setStatus("error");
     }
