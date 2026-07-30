@@ -14,9 +14,7 @@ export const contact = {
   auditFormEndpoint: "https://formspree.io/f/mykrodpy",
 };
 
-// TODO: drop in the real GA4 Measurement ID (format G-XXXXXXXXXX) once you
-// have one. Leave blank to skip loading analytics entirely.
-export const gaMeasurementId = "";
+export const gaMeasurementId = "G-CP5CN7P4CV";
 
 export const urgency = "Most projects go live within 1 to 3 weeks of that first call. The sooner we talk, the sooner it's working for you.";
 
