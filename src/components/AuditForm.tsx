@@ -7,11 +7,17 @@ export default function AuditForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("loading");
+    const formData = new FormData(e.currentTarget);
+    const rawWebsite = String(formData.get("website") || "").trim();
+    // People type "yourwebsite.com" without a scheme, which is exactly the
+    // placeholder we show them. type="url" inputs reject that silently, so
+    // this field is plain text and we add the scheme here instead.
+    formData.set("website", /^https?:\/\//i.test(rawWebsite) ? rawWebsite : `https://${rawWebsite}`);
     try {
       const res = await fetch(contact.auditFormEndpoint, {
         method: "POST",
         headers: { Accept: "application/json" },
-        body: new FormData(e.currentTarget),
+        body: formData,
       });
       setStatus(res.ok ? "success" : "error");
       if (res.ok && typeof window.gtag === "function") {
@@ -34,7 +40,8 @@ export default function AuditForm() {
     <div className="w-full max-w-md">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
         <input
-          type="url"
+          type="text"
+          inputMode="url"
           name="website"
           required
           placeholder="yourwebsite.com"
