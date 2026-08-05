@@ -39,6 +39,10 @@ export default function AuditForm() {
   return (
     <div className="w-full max-w-md">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+        {/* Honeypot: Formspree silently discards submissions where this is
+            filled in. Real visitors never see it; simple bots fill every
+            field blindly. */}
+        <input type="text" name="_gotcha" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
         <input
           type="text"
           inputMode="url"
