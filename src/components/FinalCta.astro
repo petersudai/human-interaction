@@ -56,12 +56,15 @@ import { contact, urgency } from "../data/content";
       </div>
     </Reveal>
 
-    <Reveal delay={0.15} class="mt-16 border-t border-ink-border pt-10">
-      <p class="text-sm text-dusk-100/60">
-        Not ready to talk yet? Get a free 5-point audit of your current site instead.
-      </p>
-      <div class="mt-5 flex justify-center">
-        <AuditForm client:visible />
+    <Reveal delay={0.15} class="mt-16">
+      <div class="mx-auto max-w-xl rounded-2xl border border-ink-border bg-ink-2/50 px-6 py-7 sm:px-8">
+        <p class="text-sm font-semibold text-cream">Not ready to talk yet?</p>
+        <p class="mt-1.5 text-sm text-dusk-100/70">
+          Get a free 5-point audit of your current site, no call required.
+        </p>
+        <div class="mt-5 flex justify-center">
+          <AuditForm client:visible />
+        </div>
       </div>
     </Reveal>
   </div>
