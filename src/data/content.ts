@@ -246,6 +246,11 @@ export const faqs = [
       "A focused marketing site can ship in as little as a week with a clear brief, most run 1 to 2 weeks once revisions and content are factored in. Web apps and MVPs typically run 3 to 6 weeks depending on scope. You'll get a firm timeline before any work starts.",
   },
   {
+    question: "What does the AI lead response automation actually do?",
+    answer:
+      "The moment someone submits a form on your site, an automatic reply goes out within minutes acknowledging them and setting next steps, so you're the first business they hear back from instead of the last. It's a fast, honest acknowledgment, not a bot pretending to be a person, and it buys you time to follow up personally.",
+  },
+  {
     question: "Who do we actually talk to during the project?",
     answer:
       "You'll have one dedicated point of contact for scope, timeline, and updates, backed by the team actually building your product. Direct access throughout, not a ticket queue.",
