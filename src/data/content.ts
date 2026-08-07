@@ -61,6 +61,11 @@ export const mission = {
 
 export const services = [
   {
+    title: "AI lead response & automation",
+    description:
+      "The moment someone fills out your contact form, we send an automatic text or email reply within minutes, so you're already talking to the lead before a competitor even sees the message.",
+  },
+  {
     title: "Company websites",
     description:
       "A professional site that gives your business instant credibility and makes it easy for new customers to find you and reach out.",
@@ -207,6 +212,7 @@ export const pricingTiers = [
     description: "For businesses that need a full site plus the systems behind it: bookings, payments, content.",
     features: [
       "Everything in Launch",
+      "Automated instant lead response",
       "CMS or booking/e-commerce integration",
       "Custom animations & interactions",
       "Copywriting support",
