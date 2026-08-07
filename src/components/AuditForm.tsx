@@ -20,8 +20,17 @@ export default function AuditForm() {
         body: formData,
       });
       setStatus(res.ok ? "success" : "error");
-      if (res.ok && typeof window.gtag === "function") {
-        window.gtag("event", "audit_form_submit");
+      if (res.ok) {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "audit_form_submit");
+        }
+        // Instant confirmation email — a side effect, not the main event.
+        // If this fails, the real lead capture above already succeeded.
+        fetch("/api/lead-response", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: formData.get("email"), website: formData.get("website") }),
+        }).catch(() => {});
       }
     } catch {
       setStatus("error");
