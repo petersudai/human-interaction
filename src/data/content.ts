@@ -194,7 +194,7 @@ export const differentiators = [
 export const pricingTiers = [
   {
     name: "Launch",
-    price: "Starting at $1,200",
+    price: "Starting at $1,500",
     description: "A single high-converting site to get your business online and looking the part.",
     features: [
       "Up to 5 pages",
@@ -208,7 +208,7 @@ export const pricingTiers = [
   },
   {
     name: "Growth",
-    price: "Starting at $3,200",
+    price: "Starting at $4,500",
     description: "For businesses that need a full site plus the systems behind it: bookings, payments, content.",
     features: [
       "Everything in Launch",
@@ -223,7 +223,7 @@ export const pricingTiers = [
   },
   {
     name: "Partner",
-    price: "Custom",
+    price: "Starting at $750/mo",
     description: "Ongoing product or engineering partnership for businesses that need a dependable dev team on call.",
     features: [
       "Dedicated monthly hours",
