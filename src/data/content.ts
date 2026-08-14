@@ -131,6 +131,33 @@ export const process = [
 
 export const caseStudies = [
   {
+    title: "Augere Global",
+    description:
+      "Corporate website for a capital raising and customer experience advisory firm operating across Africa, the Gulf, and Asia. One site, three regions, a single clear standard.",
+    tags: ["HTML", "CSS", "JavaScript", "Corporate"],
+    metric: "Multi-region advisory brand",
+    image: "/work/augere-global.jpg",
+    link: "https://augereglobal.com",
+  },
+  {
+    title: "Terminus",
+    description:
+      "A brand and site for a coworking concept inside a restored 1920s Atlanta freight depot, from the editorial voice and building history down to a full three-tier membership and tour-booking flow.",
+    tags: ["Astro", "Tailwind", "Lenis Scroll"],
+    metric: "Narrative brand system, three-tier membership flow",
+    image: "/work/terminus.jpg",
+    link: "https://terminus-coworking.vercel.app",
+  },
+  {
+    title: "Meridian Family Health",
+    description:
+      "A family medicine practice site built around same-week booking, physician profiles, and the transparent, human tone healthcare marketing usually skips.",
+    tags: ["Astro", "Tailwind", "Healthcare"],
+    metric: "Full booking flow, six core service lines",
+    image: "/work/meridian-family-health.jpg",
+    link: "https://meridian-family-health.vercel.app",
+  },
+  {
     title: "Sarah Mitchell Consulting",
     description:
       "A credibility-first business site for a strategy consultancy targeting mid-market CEOs. Built to qualify a lead before they ever reach the contact form, not just look good in a pitch deck.",
@@ -156,15 +183,6 @@ export const caseStudies = [
     metric: "Real booking flow, zero native dropdowns",
     image: "/work/vantage.jpg",
     link: "https://vantage-residences-dubai.vercel.app",
-  },
-  {
-    title: "Augere Global",
-    description:
-      "Corporate website for a capital raising and customer experience advisory firm operating across Africa, the Gulf, and Asia. One site, three regions, a single clear standard.",
-    tags: ["HTML", "CSS", "JavaScript", "Corporate"],
-    metric: "Multi-region advisory brand",
-    image: "/work/augere-global.jpg",
-    link: "https://augereglobal.com",
   },
 ];
 
