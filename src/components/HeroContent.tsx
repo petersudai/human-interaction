@@ -81,12 +81,16 @@ export default function HeroContent() {
         </span>
       </motion.h1>
 
-      <motion.p
-        variants={item}
-        className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-dusk-100/85 sm:mt-7 sm:text-lg md:text-xl"
-      >
+      {/*
+        Plain, not motion.p on purpose: this is the page's LCP element on
+        mobile. Gating it behind React hydration + a stagger delay before it
+        can paint was directly costing ~2.4s of Lighthouse's "element render
+        delay" for zero visual payoff — everything else still gets its
+        staggered entrance, this one line just shows up immediately.
+      */}
+      <p className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-dusk-100/85 sm:mt-7 sm:text-lg md:text-xl">
         {hero.sub}
-      </motion.p>
+      </p>
 
       <motion.div variants={item} className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row">
         <Magnetic>
