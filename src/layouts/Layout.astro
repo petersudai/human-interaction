@@ -53,7 +53,34 @@ const structuredData = {
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://cdn.sceneai.art" />
-    <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
+
+    <!--
+      Above-the-fold font files, named directly so the browser can start
+      fetching them immediately instead of waiting to discover them at the
+      end of the global.css -> fontsource @import -> @font-face chain. If the
+      font packages are ever upgraded, re-check these hashed filenames in the
+      built CSS (dist/client/_astro/*.css) — a stale hash just loses the
+      optimization silently, it doesn't break anything.
+    -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/_astro/fraunces-latin-opsz-normal.DihXLNYH.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/_astro/fraunces-latin-opsz-italic.lSdLDfvT.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/_astro/instrument-sans-latin-wght-normal.BbzFLZTg.woff2" />
+
+    <!--
+      Calendly's CSS isn't needed until someone actually opens the popup, so
+      it shouldn't block first paint on every visit. Preload it at high
+      priority without blocking render, then swap it to a real stylesheet
+      once it lands.
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://assets.calendly.com/assets/external/widget.css"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
+    </noscript>
     <link rel="canonical" href={pageUrl} />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#17151b" />
