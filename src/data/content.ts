@@ -35,6 +35,7 @@ export const heroVideo = {
 export const availability = "Taking new projects";
 
 export const nav = [
+  { label: "Site Check", href: "#site-check" },
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },
   { label: "Process", href: "#process" },

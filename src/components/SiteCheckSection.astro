@@ -1,0 +1,22 @@
+---
+import Reveal from "./Reveal.astro";
+import SiteCheck from "./SiteCheck";
+---
+
+<section id="site-check" class="border-b border-ink-border py-24 sm:py-32">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <Reveal class="mx-auto max-w-2xl text-center">
+      <span class="text-xs uppercase tracking-[0.15em] text-gold-300">Free tool</span>
+      <h2 class="mt-4 text-balance font-display text-4xl leading-tight text-cream sm:text-5xl">
+        See what your site is costing you. <em class="italic text-gold-300">Right now.</em>
+      </h2>
+      <p class="mt-5 text-dusk-100/70">
+        Paste your URL. No email required, no waiting, a real score in seconds.
+      </p>
+    </Reveal>
+
+    <Reveal delay={0.1} class="mt-12">
+      <SiteCheck client:visible />
+    </Reveal>
+  </div>
+</section>
