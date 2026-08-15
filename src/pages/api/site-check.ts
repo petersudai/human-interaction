@@ -67,7 +67,11 @@ async function runPageSpeed(
       accessibility: toScore(categories.accessibility?.score),
       bestPractices: toScore(categories["best-practices"]?.score),
     },
-    debug: { opportunities, metrics, lcpRaw: audits["largest-contentful-paint-element"] ?? null },
+    debug: {
+      opportunities,
+      metrics,
+      allAuditKeys: Object.keys(audits).filter((k) => k.toLowerCase().includes("lcp") || k.toLowerCase().includes("largest") || k.toLowerCase().includes("paint")),
+    },
   };
 }
 
