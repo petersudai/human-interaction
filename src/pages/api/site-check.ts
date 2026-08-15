@@ -70,10 +70,10 @@ async function runOwnChecks(targetUrl: string): Promise<Check[]> {
 
   return [
     { label: "Secure connection (HTTPS)", pass: finalIsHttps },
-    { label: "Page title present", pass: hasTitle },
-    { label: "Meta description present", pass: hasMetaDescription },
-    { label: "Mobile viewport configured", pass: hasViewport },
-    { label: "Structured data present", pass: hasStructuredData },
+    { label: "Page title", pass: hasTitle },
+    { label: "Meta description", pass: hasMetaDescription },
+    { label: "Mobile viewport", pass: hasViewport },
+    { label: "Structured data", pass: hasStructuredData },
   ];
 }
 
