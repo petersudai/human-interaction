@@ -37,9 +37,12 @@ async function runPageSpeed(targetUrl: string): Promise<CategoryScores> {
 
   const res = await fetchWithTimeout(
     `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params.toString()}`,
-    25000
+    55000
   );
-  if (!res.ok) throw new Error(`PageSpeed request failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`PageSpeed request failed: ${res.status} ${body.slice(0, 300)}`);
+  }
   const data = await res.json();
   const categories = data?.lighthouseResult?.categories ?? {};
   const toScore = (v: unknown) => (typeof v === "number" ? Math.round(v * 100) : null);
@@ -74,7 +77,7 @@ async function runOwnChecks(targetUrl: string): Promise<Check[]> {
   ];
 }
 
-function buildTakeaway(scores: CategoryScores, checks: Check[]): string {
+function buildTakeaway(scores: CategoryScores, checks: Check[], psiFailed: boolean): string {
   const named: Array<{ label: string; value: number }> = [];
   if (scores.performance !== null) named.push({ label: "load speed", value: scores.performance });
   if (scores.seo !== null) named.push({ label: "search visibility", value: scores.seo });
@@ -82,8 +85,20 @@ function buildTakeaway(scores: CategoryScores, checks: Check[]): string {
   if (scores.bestPractices !== null) named.push({ label: "technical health", value: scores.bestPractices });
 
   const failed = checks.filter((c) => !c.pass);
+
+  // No PSI data at all: say so plainly, never claim things look "solid"
+  // off a set of zero scores.
+  if (psiFailed && named.length === 0) {
+    if (failed.length) {
+      return `Couldn't get a full performance read on this one, might be worth trying again in a moment. What we could confirm: missing ${failed
+        .map((f) => f.label.toLowerCase())
+        .join(", ")}.`;
+    }
+    return "Couldn't get a full performance read on this one, might be worth trying again in a moment. The basics (HTTPS, title, meta description) checked out fine though.";
+  }
+
   const worst = [...named].sort((a, b) => a.value - b.value).slice(0, 2);
-  const allGood = named.every((n) => n.value >= 85) && failed.length === 0;
+  const allGood = named.length > 0 && named.every((n) => n.value >= 85) && failed.length === 0;
 
   if (allGood) {
     return "This site's actually in solid shape. Most sites we check have at least one real problem, this one doesn't show the usual red flags.";
@@ -117,15 +132,18 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: "Invalid URL" }), { status: 400 });
   }
 
+  let psiFailed = false;
   try {
     const [scores, checks] = await Promise.all([
-      runPageSpeed(targetUrl).catch(() => ({
-        performance: null,
-        seo: null,
-        accessibility: null,
-        bestPractices: null,
-      })),
-      runOwnChecks(targetUrl).catch(() => [] as Check[]),
+      runPageSpeed(targetUrl).catch((err) => {
+        psiFailed = true;
+        console.error("site-check: PageSpeed failed for", targetUrl, err);
+        return { performance: null, seo: null, accessibility: null, bestPractices: null };
+      }),
+      runOwnChecks(targetUrl).catch((err) => {
+        console.error("site-check: own checks failed for", targetUrl, err);
+        return [] as Check[];
+      }),
     ]);
 
     const numericScores = Object.values(scores).filter((v): v is number => v !== null);
@@ -143,11 +161,12 @@ export const POST: APIRoute = async ({ request }) => {
         overall,
         scores,
         checks,
-        takeaway: buildTakeaway(scores, checks),
+        takeaway: buildTakeaway(scores, checks, psiFailed),
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch {
+  } catch (err) {
+    console.error("site-check: unexpected failure for", targetUrl, err);
     return new Response(JSON.stringify({ error: "Could not analyze this URL" }), { status: 502 });
   }
 };
