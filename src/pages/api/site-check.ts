@@ -60,9 +60,6 @@ async function runPageSpeed(
     .filter((k) => audits[k])
     .map((k) => ({ metric: k, display: audits[k].displayValue }));
 
-  const lcpElement = audits["largest-contentful-paint-element"]?.details?.items?.[0] ?? null;
-  const lcpPhases = audits["largest-contentful-paint-element"]?.details?.items?.[1]?.items ?? null;
-
   return {
     scores: {
       performance: toScore(categories.performance?.score),
@@ -70,7 +67,7 @@ async function runPageSpeed(
       accessibility: toScore(categories.accessibility?.score),
       bestPractices: toScore(categories["best-practices"]?.score),
     },
-    debug: { opportunities, metrics, lcpElement, lcpPhases },
+    debug: { opportunities, metrics, lcpRaw: audits["largest-contentful-paint-element"] ?? null },
   };
 }
 
