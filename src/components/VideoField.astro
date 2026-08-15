@@ -28,11 +28,18 @@ interface Props {
    */
   eager?: boolean;
   /**
-   * Still frame shown instantly and left in place on narrow viewports instead
-   * of the video. A phone on the hero doesn't need ~5MB of decorative footage
-   * before it can see the headline.
+   * Still frame shown instantly while video loads. On narrow viewports with
+   * no mobileSrc given, this is left in place permanently instead of video.
    */
   poster?: string;
+  /**
+   * Smaller, lighter clip for narrow viewports — same footage, downscaled
+   * and re-encoded, so a phone still gets the animated background without
+   * paying for the full desktop source. Plays as a single native loop (no
+   * crossfade decoder, no second copy) to keep the cost down further. Omit
+   * to fall back to the poster-only (no video) behavior on mobile.
+   */
+  mobileSrc?: string;
 }
 
 const {
@@ -48,6 +55,7 @@ const {
   lift = 0.3,
   eager = false,
   poster,
+  mobileSrc,
 } = Astro.props;
 ---
 
@@ -59,6 +67,7 @@ const {
   data-presence={presence ? "1" : "0"}
   data-eager={eager ? "1" : "0"}
   data-src={src}
+  data-mobile-src={mobileSrc}
   aria-hidden="true"
   style={`--vf-sat:${saturate}; --vf-bri:${brightness}; --vf-lift:${lift}; --vf-opacity:${opacity}`}
 >
@@ -196,18 +205,72 @@ const {
     const vB = field.querySelector<HTMLVideoElement>("[data-vf-b]");
     if (!stack || !vA || !vB) return;
 
-    // Decorative footage isn't worth several MB of payload on a phone. The
-    // poster frame is already inside this same filtered/tinted stack, so it
-    // carries the same look with none of the download cost.
+    const pace = Number(field.dataset.pace) || 0.8;
+    const eager = field.dataset.eager === "1";
+    const mobileSrc = field.dataset.mobileSrc || "";
+
+    // On a phone, a lighter single-loop copy of the same footage if one was
+    // given, no second decoder, no crossfade math, just native <video> loop.
+    // No mobileSrc means the poster (already inside this same filtered/
+    // tinted stack) stays in place instead of video, same as before.
     if (narrow) {
-      field.dataset.live = "1";
+      if (reduceMotion || !mobileSrc) {
+        field.dataset.live = "1";
+        return;
+      }
+      vA.loop = true;
+      vA.playbackRate = pace;
+      let attached = false;
+      const attach = () => {
+        if (attached) return;
+        attached = true;
+        vA.preload = "auto";
+        vA.src = mobileSrc;
+      };
+      vA.addEventListener(
+        "playing",
+        () => {
+          field.dataset.live = "1";
+        },
+        { once: true }
+      );
+      if (eager) {
+        attach();
+      } else {
+        const pre = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              attach();
+              pre.disconnect();
+            }
+          },
+          { rootMargin: "300px" }
+        );
+        pre.observe(field);
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              attach();
+              void vA.play().catch(() => {});
+            } else {
+              vA.pause();
+            }
+          });
+        },
+        { threshold: 0.01 }
+      );
+      io.observe(field);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) vA.pause();
+        else if (field.getBoundingClientRect().top < window.innerHeight) void vA.play().catch(() => {});
+      });
       return;
     }
 
     const dissolve = Number(field.dataset.dissolve) || 1.1;
-    const pace = Number(field.dataset.pace) || 0.8;
     const wantsPresence = field.dataset.presence === "1";
-    const eager = field.dataset.eager === "1";
     const source = field.dataset.src || "";
 
     // The two copies used to load simultaneously, doubling the initial
