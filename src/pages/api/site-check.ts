@@ -70,7 +70,8 @@ async function runPageSpeed(
     debug: {
       opportunities,
       metrics,
-      allAuditKeys: Object.keys(audits).filter((k) => k.toLowerCase().includes("lcp") || k.toLowerCase().includes("largest") || k.toLowerCase().includes("paint")),
+      lcpDiscovery: audits["lcp-discovery-insight"] ?? null,
+      lcpBreakdown: audits["lcp-breakdown-insight"] ?? null,
     },
   };
 }
