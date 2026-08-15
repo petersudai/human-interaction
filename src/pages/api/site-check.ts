@@ -29,9 +29,7 @@ async function fetchWithTimeout(url: string, ms: number, init?: RequestInit) {
   }
 }
 
-async function runPageSpeed(
-  targetUrl: string
-): Promise<{ scores: CategoryScores; debug: unknown }> {
+async function runPageSpeed(targetUrl: string): Promise<CategoryScores> {
   const apiKey = import.meta.env.PAGESPEED_API_KEY;
   const params = new URLSearchParams({ url: targetUrl, strategy: "mobile" });
   ["performance", "seo", "accessibility", "best-practices"].forEach((c) => params.append("category", c));
@@ -49,30 +47,11 @@ async function runPageSpeed(
   const categories = data?.lighthouseResult?.categories ?? {};
   const toScore = (v: unknown) => (typeof v === "number" ? Math.round(v * 100) : null);
 
-  // TEMPORARY diagnostic block, stripped once the performance pass is done.
-  const audits = data?.lighthouseResult?.audits ?? {};
-  const opportunities = Object.values(audits)
-    .filter((a: any) => a?.details?.type === "opportunity" && a.numericValue > 0)
-    .map((a: any) => ({ title: a.title, ms: Math.round(a.numericValue), display: a.displayValue }))
-    .sort((a: any, b: any) => b.ms - a.ms)
-    .slice(0, 8);
-  const metrics = ["first-contentful-paint", "largest-contentful-paint", "total-blocking-time", "speed-index", "interactive", "cumulative-layout-shift"]
-    .filter((k) => audits[k])
-    .map((k) => ({ metric: k, display: audits[k].displayValue }));
-
   return {
-    scores: {
-      performance: toScore(categories.performance?.score),
-      seo: toScore(categories.seo?.score),
-      accessibility: toScore(categories.accessibility?.score),
-      bestPractices: toScore(categories["best-practices"]?.score),
-    },
-    debug: {
-      opportunities,
-      metrics,
-      lcpDiscovery: audits["lcp-discovery-insight"] ?? null,
-      lcpBreakdown: audits["lcp-breakdown-insight"] ?? null,
-    },
+    performance: toScore(categories.performance?.score),
+    seo: toScore(categories.seo?.score),
+    accessibility: toScore(categories.accessibility?.score),
+    bestPractices: toScore(categories["best-practices"]?.score),
   };
 }
 
@@ -155,21 +134,17 @@ export const POST: APIRoute = async ({ request }) => {
 
   let psiFailed = false;
   try {
-    const [psi, checks] = await Promise.all([
+    const [scores, checks] = await Promise.all([
       runPageSpeed(targetUrl).catch((err) => {
         psiFailed = true;
         console.error("site-check: PageSpeed failed for", targetUrl, err);
-        return {
-          scores: { performance: null, seo: null, accessibility: null, bestPractices: null },
-          debug: null,
-        };
+        return { performance: null, seo: null, accessibility: null, bestPractices: null };
       }),
       runOwnChecks(targetUrl).catch((err) => {
         console.error("site-check: own checks failed for", targetUrl, err);
         return [] as Check[];
       }),
     ]);
-    const { scores, debug } = psi;
 
     const numericScores = Object.values(scores).filter((v): v is number => v !== null);
     const overall = numericScores.length
@@ -187,7 +162,6 @@ export const POST: APIRoute = async ({ request }) => {
         scores,
         checks,
         takeaway: buildTakeaway(scores, checks, psiFailed),
-        debug,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
