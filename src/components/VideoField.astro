@@ -27,6 +27,12 @@ interface Props {
    * isn't buffering the same clip in several decoders at once.
    */
   eager?: boolean;
+  /**
+   * Still frame shown instantly and left in place on narrow viewports instead
+   * of the video. A phone on the hero doesn't need ~5MB of decorative footage
+   * before it can see the headline.
+   */
+  poster?: string;
 }
 
 const {
@@ -41,6 +47,7 @@ const {
   brightness = 0.96,
   lift = 0.3,
   eager = false,
+  poster,
 } = Astro.props;
 ---
 
@@ -59,18 +66,17 @@ const {
     <video
       class="video-field__v"
       data-vf-a
-      src={eager ? src : undefined}
+      poster={poster}
       muted
       playsinline
-      preload={eager ? "auto" : "none"}
+      preload="none"
       style="z-index:1"></video>
     <video
       class="video-field__v"
       data-vf-b
-      src={eager ? src : undefined}
       muted
       playsinline
-      preload={eager ? "auto" : "none"}
+      preload="none"
       style="z-index:2; opacity:0"></video>
   </div>
 
@@ -181,6 +187,7 @@ const {
 <script>
   // One hoisted module drives every <VideoField> on the page.
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const narrow = window.matchMedia("(max-width: 767px)").matches;
 
   document.querySelectorAll<HTMLElement>("[data-video-field]").forEach((field) => {
     const stack = field.querySelector<HTMLElement>(".video-field__stack");
@@ -189,27 +196,36 @@ const {
     const vB = field.querySelector<HTMLVideoElement>("[data-vf-b]");
     if (!stack || !vA || !vB) return;
 
+    // Decorative footage isn't worth several MB of payload on a phone. The
+    // poster frame is already inside this same filtered/tinted stack, so it
+    // carries the same look with none of the download cost.
+    if (narrow) {
+      field.dataset.live = "1";
+      return;
+    }
+
     const dissolve = Number(field.dataset.dissolve) || 1.1;
     const pace = Number(field.dataset.pace) || 0.8;
     const wantsPresence = field.dataset.presence === "1";
     const eager = field.dataset.eager === "1";
     const source = field.dataset.src || "";
 
-    // Two decoders per field is worth it for the hero, but not for decoration
-    // on a phone. Below md, secondary fields run one copy and accept the seam.
-    const narrow = window.matchMedia("(max-width: 767px)").matches;
-    const useCrossfade = eager || !narrow;
-
-    let sourceAttached = eager;
-    const attachSource = () => {
-      if (sourceAttached || !source) return;
-      sourceAttached = true;
+    // The two copies used to load simultaneously, doubling the initial
+    // payload. Now only the visible one loads up front; the crossfade copy
+    // attaches once the first is actually playing.
+    let primaryAttached = false;
+    const attachPrimary = () => {
+      if (primaryAttached || !source) return;
+      primaryAttached = true;
       vA.preload = "auto";
       vA.src = source;
-      if (useCrossfade) {
-        vB.preload = "auto";
-        vB.src = source;
-      }
+    };
+    let secondaryAttached = false;
+    const attachSecondary = () => {
+      if (secondaryAttached || !source) return;
+      secondaryAttached = true;
+      vB.preload = "auto";
+      vB.src = source;
     };
 
     const restSat = Number(getComputedStyle(field).getPropertyValue("--vf-sat")) || 1.15;
@@ -268,10 +284,6 @@ const {
 
     const tick = () => {
       if (!live || !visible) return;
-      if (!useCrossfade) {
-        rafId = requestAnimationFrame(tick);
-        return;
-      }
       const d = front.duration;
       if (d && isFinite(d)) {
         const remaining = d - front.currentTime;
@@ -307,20 +319,21 @@ const {
       if (visible) rafId = requestAnimationFrame(tick);
     };
 
-    if (!useCrossfade) vA.loop = true;
-
     if (reduceMotion) {
-      // no playback; a loaded, paused video holds its first frame
+      // no playback; a loaded, paused video holds its first frame. One copy
+      // is all reduced-motion ever needs.
       const hold = () => {
         if (vA.readyState >= 2) goLive();
         else vA.addEventListener("loadeddata", goLive, { once: true });
       };
-      if (eager) hold();
-      else {
+      if (eager) {
+        attachPrimary();
+        hold();
+      } else {
         const once = new IntersectionObserver(
           (entries) => {
             if (entries.some((e) => e.isIntersecting)) {
-              attachSource();
+              attachPrimary();
               hold();
               once.disconnect();
             }
@@ -332,14 +345,23 @@ const {
       return;
     }
 
-    vA.addEventListener("playing", goLive, { once: true });
+    vA.addEventListener(
+      "playing",
+      () => {
+        goLive();
+        attachSecondary();
+      },
+      { once: true }
+    );
 
-    /* ---- attach the source just before it's needed ---- */
-    if (!eager) {
+    /* ---- attach the primary copy just before it's needed ---- */
+    if (eager) {
+      attachPrimary();
+    } else {
       const pre = new IntersectionObserver(
         (entries) => {
           if (entries.some((e) => e.isIntersecting)) {
-            attachSource();
+            attachPrimary();
             pre.disconnect();
           }
         },
@@ -354,7 +376,7 @@ const {
         entries.forEach((entry) => {
           visible = entry.isIntersecting;
           if (visible) {
-            attachSource();
+            attachPrimary();
             void front.play().catch(() => {});
             cancelAnimationFrame(rafId);
             if (live) rafId = requestAnimationFrame(tick);
