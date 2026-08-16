@@ -170,6 +170,10 @@ export default function SiteCheck() {
               );
             })}
           </div>
+          <p className="mt-3 text-center text-[11px] text-dusk-100/60">
+            Speed, SEO, accessibility, and best practices scores via Google PageSpeed Insights. Scores can vary
+            slightly between runs.
+          </p>
 
           {result.checks.length > 0 && (
             <ul className="mt-6 flex flex-col gap-2 border-t border-ink-border pt-6">
