@@ -57,6 +57,18 @@ async function runPageSpeed(
     .filter((a: any) => a11yRefs.has(a.id) && a.score !== null && a.score < 1)
     .map((a: any) => ({ id: a.id, title: a.title, score: a.score, details: a.details?.items?.slice(0, 3) }));
 
+  const lr = data?.lighthouseResult ?? {};
+  const runInfo = {
+    lighthouseVersion: lr.lighthouseVersion,
+    userAgent: lr.userAgent,
+    fetchTime: lr.fetchTime,
+    configSettings: lr.configSettings,
+    environment: lr.environment,
+    runWarnings: lr.runWarnings,
+    finalUrl: lr.finalUrl,
+    timing: lr.timing,
+  };
+
   return {
     scores: {
       performance: toScore(categories.performance?.score),
@@ -64,7 +76,7 @@ async function runPageSpeed(
       accessibility: toScore(categories.accessibility?.score),
       bestPractices: toScore(categories["best-practices"]?.score),
     },
-    debug: { failedA11y },
+    debug: { failedA11y, runInfo },
   };
 }
 
