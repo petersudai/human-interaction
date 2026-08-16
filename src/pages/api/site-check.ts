@@ -4,6 +4,7 @@ import { contact } from "../../data/content";
 export const prerender = false;
 
 const OWN_HOSTNAMES = new Set(["humaninteraction.net", "www.humaninteraction.net"]);
+const LEAD_NOTIFICATION_EMAIL = "psudai@gmail.com";
 
 async function notifyLead(targetUrl: string, overall: number | null): Promise<void> {
   const apiKey = import.meta.env.RESEND_API_KEY;
@@ -25,7 +26,7 @@ async function notifyLead(targetUrl: string, overall: number | null): Promise<vo
     },
     body: JSON.stringify({
       from: `Site Check <${contact.email}>`,
-      to: contact.email,
+      to: LEAD_NOTIFICATION_EMAIL,
       subject: `Site Check run: ${hostname}`,
       html: `<p>Someone just ran Site Check on <strong>${hostname}</strong>.</p><p>Overall score: ${
         overall ?? "n/a"
