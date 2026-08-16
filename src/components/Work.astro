@@ -37,6 +37,8 @@ const items = caseStudies.map((c) => ({
                   <img
                     src={c.image}
                     alt={c.title}
+                    loading="lazy"
+                    decoding="async"
                     class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
