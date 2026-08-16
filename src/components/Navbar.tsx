@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domMax, m } from "framer-motion";
 import LogoMark from "./LogoMark";
 import { availability, brand, contact, nav } from "../data/content";
 
@@ -40,6 +40,7 @@ export default function Navbar() {
   }, [open]);
 
   return (
+    <LazyMotion features={domMax}>
     <header className="fixed inset-x-0 top-0 z-50 md:top-3">
       {/* Mobile keeps the plain full-width bar; the island is desktop-only. */}
       <div
@@ -80,7 +81,7 @@ export default function Navbar() {
               className="relative rounded-xl px-3.5 py-2 text-sm font-medium text-dusk-100/75 transition-colors duration-200 hover:text-cream"
             >
               {hovered === i && (
-                <motion.span
+                <m.span
                   layoutId="nav-indicator"
                   className="absolute inset-0 rounded-xl bg-cream/10"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
@@ -112,11 +113,11 @@ export default function Navbar() {
             onClick={() => setOpen((v) => !v)}
             className="relative flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-ink-border transition-colors duration-300 hover:border-dusk-300 md:hidden"
           >
-            <motion.span
+            <m.span
               animate={open ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
               className="h-px w-4 bg-cream"
             />
-            <motion.span
+            <m.span
               animate={open ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
               className="h-px w-4 bg-cream"
             />
@@ -132,7 +133,7 @@ export default function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -170,9 +171,10 @@ export default function Navbar() {
                 Book a free strategy call
               </a>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>
+    </LazyMotion>
   );
 }

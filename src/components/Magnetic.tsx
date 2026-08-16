@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, domMax, m } from "framer-motion";
 
 interface Props {
   children: ReactNode;
@@ -21,15 +21,17 @@ export default function Magnetic({ children, strength = 0.35, className = "" }: 
   };
 
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setPos({ x: 0, y: 0 })}
-      animate={{ x: pos.x, y: pos.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 12, mass: 0.2 }}
-      className={`inline-block ${className}`}
-    >
-      {children}
-    </motion.div>
+    <LazyMotion features={domMax}>
+      <m.div
+        ref={ref}
+        onMouseMove={handleMove}
+        onMouseLeave={() => setPos({ x: 0, y: 0 })}
+        animate={{ x: pos.x, y: pos.y }}
+        transition={{ type: "spring", stiffness: 150, damping: 12, mass: 0.2 }}
+        className={`inline-block ${className}`}
+      >
+        {children}
+      </m.div>
+    </LazyMotion>
   );
 }

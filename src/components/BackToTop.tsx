@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domMax, m } from "framer-motion";
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -16,20 +16,22 @@ export default function BackToTop() {
   };
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.button
-          onClick={scrollToTop}
-          aria-label="Back to top"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 12 }}
-          transition={{ duration: 0.25 }}
-          className="fixed bottom-6 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-ink-border bg-ink-2/90 text-cream shadow-lg backdrop-blur-sm transition-colors duration-300 hover:border-gold-400 hover:text-gold-300 sm:bottom-8 sm:right-8"
-        >
-          <span aria-hidden="true">↑</span>
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <LazyMotion features={domMax}>
+      <AnimatePresence>
+        {visible && (
+          <m.button
+            onClick={scrollToTop}
+            aria-label="Back to top"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-6 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-ink-border bg-ink-2/90 text-cream shadow-lg backdrop-blur-sm transition-colors duration-300 hover:border-gold-400 hover:text-gold-300 sm:bottom-8 sm:right-8"
+          >
+            <span aria-hidden="true">↑</span>
+          </m.button>
+        )}
+      </AnimatePresence>
+    </LazyMotion>
   );
 }
