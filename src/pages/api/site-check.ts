@@ -1,6 +1,38 @@
 import type { APIRoute } from "astro";
+import { contact } from "../../data/content";
 
 export const prerender = false;
+
+const OWN_HOSTNAMES = new Set(["humaninteraction.net", "www.humaninteraction.net"]);
+
+async function notifyLead(targetUrl: string, overall: number | null): Promise<void> {
+  const apiKey = import.meta.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  let hostname: string;
+  try {
+    hostname = new URL(targetUrl).hostname.toLowerCase();
+  } catch {
+    return;
+  }
+  if (OWN_HOSTNAMES.has(hostname)) return;
+
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `Site Check <${contact.email}>`,
+      to: contact.email,
+      subject: `Site Check run: ${hostname}`,
+      html: `<p>Someone just ran Site Check on <strong>${hostname}</strong>.</p><p>Overall score: ${
+        overall ?? "n/a"
+      }</p><p>Full URL: ${targetUrl}</p>`,
+    }),
+  }).catch((err) => console.error("site-check: lead notification failed for", targetUrl, err));
+}
 
 interface CategoryScores {
   performance: number | null;
@@ -155,6 +187,10 @@ export const POST: APIRoute = async ({ request }) => {
     if (overall === null && checks.length === 0) {
       return new Response(JSON.stringify({ error: "Could not analyze this URL" }), { status: 502 });
     }
+
+    notifyLead(targetUrl, overall).catch((err) =>
+      console.error("site-check: lead notification failed for", targetUrl, err)
+    );
 
     return new Response(
       JSON.stringify({

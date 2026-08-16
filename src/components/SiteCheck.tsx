@@ -101,7 +101,10 @@ export default function SiteCheck() {
       setResult(data);
       setStatus("success");
       if (typeof window.gtag === "function") {
-        window.gtag("event", "site_check_run");
+        window.gtag("event", "site_check_run", {
+          checked_url: data.url,
+          overall_score: data.overall,
+        });
       }
     } catch {
       setStatus("error");
