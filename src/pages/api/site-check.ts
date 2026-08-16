@@ -6,7 +6,12 @@ export const prerender = false;
 const OWN_HOSTNAMES = new Set(["humaninteraction.net", "www.humaninteraction.net"]);
 const LEAD_NOTIFICATION_EMAIL = "psudai@gmail.com";
 
-async function notifyLead(targetUrl: string, overall: number | null): Promise<void> {
+async function notifyLead(
+  targetUrl: string,
+  overall: number | null,
+  scores: CategoryScores,
+  checks: Check[]
+): Promise<void> {
   const apiKey = import.meta.env.RESEND_API_KEY;
   if (!apiKey) return;
 
@@ -18,6 +23,16 @@ async function notifyLead(targetUrl: string, overall: number | null): Promise<vo
   }
   if (OWN_HOSTNAMES.has(hostname)) return;
 
+  const scoreRow = (label: string, value: number | null) =>
+    `<tr><td style="padding:4px 12px 4px 0;">${label}</td><td style="padding:4px 0;font-weight:600;">${
+      value ?? "n/a"
+    }</td></tr>`;
+
+  const checkRow = (check: Check) =>
+    `<tr><td style="padding:4px 12px 4px 0;">${check.label}</td><td style="padding:4px 0;">${
+      check.pass ? "✓ pass" : "✕ fail"
+    }</td></tr>`;
+
   await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -27,10 +42,21 @@ async function notifyLead(targetUrl: string, overall: number | null): Promise<vo
     body: JSON.stringify({
       from: `Site Check <${contact.email}>`,
       to: LEAD_NOTIFICATION_EMAIL,
-      subject: `Site Check run: ${hostname}`,
-      html: `<p>Someone just ran Site Check on <strong>${hostname}</strong>.</p><p>Overall score: ${
-        overall ?? "n/a"
-      }</p><p>Full URL: ${targetUrl}</p>`,
+      subject: `Site Check run: ${hostname} (${overall ?? "n/a"})`,
+      html: `
+        <p>Someone just ran Site Check on <strong>${hostname}</strong>.</p>
+        <table cellpadding="0" cellspacing="0">
+          ${scoreRow("Overall", overall)}
+          ${scoreRow("Speed", scores.performance)}
+          ${scoreRow("SEO", scores.seo)}
+          ${scoreRow("Accessibility", scores.accessibility)}
+          ${scoreRow("Best Practices", scores.bestPractices)}
+        </table>
+        <table cellpadding="0" cellspacing="0" style="margin-top:12px;">
+          ${checks.map(checkRow).join("")}
+        </table>
+        <p style="margin-top:12px;">Full URL: ${targetUrl}</p>
+      `,
     }),
   }).catch((err) => console.error("site-check: lead notification failed for", targetUrl, err));
 }
@@ -189,7 +215,7 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: "Could not analyze this URL" }), { status: 502 });
     }
 
-    notifyLead(targetUrl, overall).catch((err) =>
+    notifyLead(targetUrl, overall, scores, checks).catch((err) =>
       console.error("site-check: lead notification failed for", targetUrl, err)
     );
 
