@@ -29,7 +29,7 @@ async function fetchWithTimeout(url: string, ms: number, init?: RequestInit) {
   }
 }
 
-async function runPageSpeed(targetUrl: string): Promise<CategoryScores> {
+async function runPageSpeed(targetUrl: string): Promise<{ scores: CategoryScores; debug: unknown }> {
   const apiKey = import.meta.env.PAGESPEED_API_KEY;
   const params = new URLSearchParams({ url: targetUrl, strategy: "mobile" });
   ["performance", "seo", "accessibility", "best-practices"].forEach((c) => params.append("category", c));
@@ -47,11 +47,21 @@ async function runPageSpeed(targetUrl: string): Promise<CategoryScores> {
   const categories = data?.lighthouseResult?.categories ?? {};
   const toScore = (v: unknown) => (typeof v === "number" ? Math.round(v * 100) : null);
 
+  // TEMPORARY diagnostic block.
+  const audits = data?.lighthouseResult?.audits ?? {};
+  const a11yRefs = new Set(categories.accessibility?.auditRefs?.map((r: any) => r.id) ?? []);
+  const failedA11y = Object.values(audits)
+    .filter((a: any) => a11yRefs.has(a.id) && a.score !== null && a.score < 1)
+    .map((a: any) => ({ id: a.id, title: a.title, score: a.score, details: a.details?.items?.slice(0, 3) }));
+
   return {
-    performance: toScore(categories.performance?.score),
-    seo: toScore(categories.seo?.score),
-    accessibility: toScore(categories.accessibility?.score),
-    bestPractices: toScore(categories["best-practices"]?.score),
+    scores: {
+      performance: toScore(categories.performance?.score),
+      seo: toScore(categories.seo?.score),
+      accessibility: toScore(categories.accessibility?.score),
+      bestPractices: toScore(categories["best-practices"]?.score),
+    },
+    debug: { failedA11y },
   };
 }
 
@@ -134,17 +144,21 @@ export const POST: APIRoute = async ({ request }) => {
 
   let psiFailed = false;
   try {
-    const [scores, checks] = await Promise.all([
+    const [psi, checks] = await Promise.all([
       runPageSpeed(targetUrl).catch((err) => {
         psiFailed = true;
         console.error("site-check: PageSpeed failed for", targetUrl, err);
-        return { performance: null, seo: null, accessibility: null, bestPractices: null };
+        return {
+          scores: { performance: null, seo: null, accessibility: null, bestPractices: null },
+          debug: null,
+        };
       }),
       runOwnChecks(targetUrl).catch((err) => {
         console.error("site-check: own checks failed for", targetUrl, err);
         return [] as Check[];
       }),
     ]);
+    const { scores, debug } = psi;
 
     const numericScores = Object.values(scores).filter((v): v is number => v !== null);
     const overall = numericScores.length
@@ -162,6 +176,7 @@ export const POST: APIRoute = async ({ request }) => {
         scores,
         checks,
         takeaway: buildTakeaway(scores, checks, psiFailed),
+        debug,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
