@@ -11,17 +11,17 @@ async function notifyLead(
   overall: number | null,
   scores: CategoryScores,
   checks: Check[]
-): Promise<{ attempted: boolean; reason?: string; resendStatus?: number; resendBody?: string }> {
+): Promise<void> {
   const apiKey = import.meta.env.RESEND_API_KEY;
-  if (!apiKey) return { attempted: false, reason: "no RESEND_API_KEY configured" };
+  if (!apiKey) return;
 
   let hostname: string;
   try {
     hostname = new URL(targetUrl).hostname.toLowerCase();
   } catch {
-    return { attempted: false, reason: "invalid URL" };
+    return;
   }
-  if (OWN_HOSTNAMES.has(hostname)) return { attempted: false, reason: "self-check, filtered" };
+  if (OWN_HOSTNAMES.has(hostname)) return;
 
   const scoreRow = (label: string, value: number | null) =>
     `<tr><td style="padding:4px 12px 4px 0;">${label}</td><td style="padding:4px 0;font-weight:600;">${
@@ -33,38 +33,32 @@ async function notifyLead(
       check.pass ? "✓ pass" : "✕ fail"
     }</td></tr>`;
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: `Site Check <${contact.email}>`,
-        to: LEAD_NOTIFICATION_EMAIL,
-        subject: `Site Check run: ${hostname} (${overall ?? "n/a"})`,
-        html: `
-          <p>Someone just ran Site Check on <strong>${hostname}</strong>.</p>
-          <table cellpadding="0" cellspacing="0">
-            ${scoreRow("Overall", overall)}
-            ${scoreRow("Speed", scores.performance)}
-            ${scoreRow("SEO", scores.seo)}
-            ${scoreRow("Accessibility", scores.accessibility)}
-            ${scoreRow("Best Practices", scores.bestPractices)}
-          </table>
-          <table cellpadding="0" cellspacing="0" style="margin-top:12px;">
-            ${checks.map(checkRow).join("")}
-          </table>
-          <p style="margin-top:12px;">Full URL: ${targetUrl}</p>
-        `,
-      }),
-    });
-    const resendBody = await res.text().catch(() => "");
-    return { attempted: true, resendStatus: res.status, resendBody: resendBody.slice(0, 300) };
-  } catch (err) {
-    return { attempted: true, reason: err instanceof Error ? err.message : "unknown fetch error" };
-  }
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `Site Check <${contact.email}>`,
+      to: LEAD_NOTIFICATION_EMAIL,
+      subject: `Site Check run: ${hostname} (${overall ?? "n/a"})`,
+      html: `
+        <p>Someone just ran Site Check on <strong>${hostname}</strong>.</p>
+        <table cellpadding="0" cellspacing="0">
+          ${scoreRow("Overall", overall)}
+          ${scoreRow("Speed", scores.performance)}
+          ${scoreRow("SEO", scores.seo)}
+          ${scoreRow("Accessibility", scores.accessibility)}
+          ${scoreRow("Best Practices", scores.bestPractices)}
+        </table>
+        <table cellpadding="0" cellspacing="0" style="margin-top:12px;">
+          ${checks.map(checkRow).join("")}
+        </table>
+        <p style="margin-top:12px;">Full URL: ${targetUrl}</p>
+      `,
+    }),
+  }).catch((err) => console.error("site-check: lead notification failed for", targetUrl, err));
 }
 
 interface CategoryScores {
@@ -221,11 +215,9 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: "Could not analyze this URL" }), { status: 502 });
     }
 
-    // TEMPORARY: awaited + surfaced for diagnosis, normally fire-and-forget.
-    const notifyDebug = await notifyLead(targetUrl, overall, scores, checks).catch((err) => ({
-      attempted: true,
-      reason: err instanceof Error ? err.message : "unknown error",
-    }));
+    notifyLead(targetUrl, overall, scores, checks).catch((err) =>
+      console.error("site-check: lead notification failed for", targetUrl, err)
+    );
 
     return new Response(
       JSON.stringify({
@@ -234,7 +226,6 @@ export const POST: APIRoute = async ({ request }) => {
         scores,
         checks,
         takeaway: buildTakeaway(scores, checks, psiFailed),
-        notifyDebug,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
