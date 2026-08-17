@@ -214,7 +214,8 @@ export const pricingTiers = [
   {
     name: "Launch",
     price: "Starting at $1,500",
-    description: "A single high-converting site to get your business online and looking the part.",
+    description:
+      "A single high-converting site to get your business online and looking the part. Automatic lead response comes with Growth.",
     features: [
       "Up to 5 pages",
       "Custom design, no templates",
