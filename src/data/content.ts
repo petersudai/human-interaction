@@ -215,8 +215,9 @@ export const pricingTiers = [
     name: "Launch",
     price: "Starting at $1,500",
     description:
-      "A single high-converting site to get your business online and looking the part. Automatic lead response comes with Growth.",
+      "A single high-converting site to get your business online and looking the part, with instant automated lead response built in.",
     features: [
+      "Automated instant lead response",
       "Up to 5 pages",
       "Custom design, no templates",
       "Mobile-first & fast",
@@ -232,7 +233,6 @@ export const pricingTiers = [
     description: "For businesses that need a full site plus the systems behind it: bookings, payments, content.",
     features: [
       "Everything in Launch",
-      "Automated instant lead response",
       "CMS or booking/e-commerce integration",
       "Custom animations & interactions",
       "Copywriting support",
